@@ -1,5 +1,6 @@
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, render
+from django.views import View
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -7,7 +8,7 @@ from rest_framework import status
 
 from store.utils import get_cart_id
 from .models import Cart, CartItem, Product
-from .serializers import CartItemSerializer, MiniCartItemSerializer, ProductDetialSerializer, ProductSerializer
+from .serializers import CartItemSerializer, CustomerSerializer, MiniCartItemSerializer, ProductDetialSerializer, ProductSerializer
 
 # Create your views here.
 
@@ -79,3 +80,13 @@ class CartItemDetail(APIView):
         cart_item.save()
         serializer = CartItemSerializer(cart_item)
         return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+
+
+class ProcessOrderView(APIView):
+    def get(self, request:HttpRequest):
+        # Show some kind of form
+        return Response('Hello')
+    def post(self, request:HttpRequest):
+        serializer = CustomerSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
