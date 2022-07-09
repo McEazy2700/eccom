@@ -72,15 +72,10 @@ class CartItemDetail(APIView):
 
     def patch(self, request:HttpRequest, pk):
         cart_id = get_cart_id(request)
-        cart_item 
-
-@api_view(['GET', 'POST'])
-def update_cart_item(request:HttpRequest):
-    if request.method == 'DELETE':
+        cart_item = get_object_or_404(CartItem, cart__id=cart_id, product__id=pk)
         serializer = MiniCartItemSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        product_id = serializer.validated_data['product']
-        cart_id = get_cart_id(request)
-        cart = get_object_or_404(Cart, id=cart_id)
-        item = CartItem.objects.filter(cart=cart, product__id=product_id)
-        print(item)
+        cart_item.quantity = serializer.validated_data['quantity']
+        cart_item.save()
+        serializer = CartItemSerializer(cart_item)
+        return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
