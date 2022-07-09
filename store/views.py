@@ -44,21 +44,35 @@ class CartItemList(APIView):
         cart_id = get_cart_id(request)
 
         cart = get_object_or_404(Cart, id=cart_id)
-        item = CartItem.objects.create(
-            cart=cart, 
-            product=product, 
-            quantity=quantity)
-        item.save()
+        try:
+            item = CartItem.objects.get(cart=cart, product=product)
+            item.quantity += quantity
+            item.save()
+        except CartItem.DoesNotExist:
+            item = CartItem.objects.create(
+                cart=cart, 
+                product=product, 
+                quantity=quantity)
+            item.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 class CartItemDetail(APIView):
     def get(self, request:HttpRequest, pk):
         cart_id = get_cart_id(request)
-        cart = get_object_or_404(Cart, id=cart_id)
-        cart_item = get_object_or_404(CartItem, cart=cart, pk=pk)
+        cart_item = get_object_or_404(CartItem, cart__id=cart_id, product__id=pk)
         serializer = CartItemSerializer(cart_item)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def delete(self, request:HttpRequest, pk):
+        cart_id = get_cart_id(request)
+        cart_item = get_object_or_404(CartItem, cart__id=cart_id, product__id=pk)
+        cart_item.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    def patch(self, request:HttpRequest, pk):
+        cart_id = get_cart_id(request)
+        cart_item 
 
 @api_view(['GET', 'POST'])
 def update_cart_item(request:HttpRequest):
