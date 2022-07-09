@@ -2,9 +2,12 @@ from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework import status
+
+from store.utils import get_cart_id
 from .models import Cart, CartItem, Product
-from .serializers import CartItemSerializer, ProductDetialSerializer, ProductSerializer
+from .serializers import CartItemSerializer, MiniCartItemSerializer, ProductDetialSerializer, ProductSerializer
 
 # Create your views here.
 
@@ -24,30 +27,46 @@ def product_detail(request:HttpRequest, id) -> Response:
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-@api_view(['POST', 'PATCH'])
+class CartItemList(APIView):
+    def get(self, request:HttpRequest):
+        cart_id = get_cart_id(request)
+        cart = get_object_or_404(Cart, id=cart_id)
+        cart_items = cart.items
+        serializer = CartItemSerializer(cart_items, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request:HttpRequest):
+        serializer = CartItemSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        product = serializer.validated_data['product']
+        quantity = serializer.validated_data['quantity']
+
+        cart_id = get_cart_id(request)
+
+        cart = get_object_or_404(Cart, id=cart_id)
+        item = CartItem.objects.create(
+            cart=cart, 
+            product=product, 
+            quantity=quantity)
+        item.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class CartItemDetail(APIView):
+    def get(self, request:HttpRequest, pk):
+        cart_id = get_cart_id(request)
+        cart = get_object_or_404(Cart, id=cart_id)
+        cart_item = get_object_or_404(CartItem, cart=cart, pk=pk)
+        serializer = CartItemSerializer(cart_item)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+@api_view(['GET', 'POST'])
 def update_cart_item(request:HttpRequest):
-    # Data:
-        # product id
-        # quantity
-    serializer = CartItemSerializer(data=request.data)
-    serializer.is_valid(raise_exception=True)
-    product = serializer.validated_data['product']
-    quantity = serializer.validated_data['quantity']
-    try:
-        cart_id = request.session['cart_id']
-    except:
-        new_cart = Cart.objects.create()
-        new_cart.save()
-        new_id = new_cart.id
-        request.session['cart_id'] = str(new_id)
-        request.session.save()
-        cart_id = request.session['cart_id']
-
-    cart = get_object_or_404(Cart, id=cart_id)
-    item = CartItem.objects.create(
-        cart=cart, 
-        product=product, 
-        quantity=quantity)
-    item.save()
-
-    return Response(serializer.data, status=status.HTTP_201_CREATED)
+    if request.method == 'DELETE':
+        serializer = MiniCartItemSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        product_id = serializer.validated_data['product']
+        cart_id = get_cart_id(request)
+        cart = get_object_or_404(Cart, id=cart_id)
+        item = CartItem.objects.filter(cart=cart, product__id=product_id)
+        print(item)

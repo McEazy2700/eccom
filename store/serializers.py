@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import CartItem, Product
+from .models import Cart, CartItem, Product
 
 
 class ProductSerializer(serializers.ModelSerializer):
@@ -18,3 +18,8 @@ class CartItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = CartItem
         fields = ['product', 'quantity']
+
+class MiniCartItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CartItem
+        fields = ['product_id']
