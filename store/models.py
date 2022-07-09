@@ -47,6 +47,9 @@ class CartItem(models.Model):
     def __str__(self) -> str:
         return self.product.title
 
+    class Meta:
+        unique_together = [['cart', 'product']]
+
 class Order(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.PROTECT)
     date_added = models.DateTimeField(auto_now_add=True)
