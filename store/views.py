@@ -1,5 +1,5 @@
 from django.http import HttpRequest, HttpResponse
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.views import View
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -7,8 +7,8 @@ from rest_framework.views import APIView
 from rest_framework import status
 
 from store.utils import get_cart_id
-from .models import Cart, CartItem, Product
-from .serializers import CartItemSerializer, CustomerSerializer, MiniCartItemSerializer, ProductDetialSerializer, ProductSerializer
+from .models import Cart, CartItem, Customer, Product
+from .serializers import CartItemSerializer, CustomerSerializer, MiniCartItemSerializer, MiniCustomerSerializer, ProductDetialSerializer, ProductSerializer
 
 # Create your views here.
 
@@ -81,13 +81,34 @@ class CartItemDetail(APIView):
         serializer = CartItemSerializer(cart_item)
         return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
 
+@api_view(['POST'])
+def get_customer(request:HttpRequest):
+    if request.method == 'POST':
+        try:
+            print(request.data)
+            customer = Customer.objects.get(email=request.data['email'])
+            cart_id = get_cart_id(request)
+            cart = get_object_or_404(Cart, id=cart_id, expired=False)
+            cart.customer = customer
+            cart.save()
+            serializer = CustomerSerializer(customer)
+        except:
+            return Response({'error': 'does not exist'}, status=status.HTTP_404_NOT_FOUND)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
-class ProcessOrderView(APIView):
-    def get(self, request:HttpRequest):
-        # Show some kind of form
-        return Response('Hello')
-    def post(self, request:HttpRequest):
-        serializer = CustomerSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+@api_view(['GET', 'POST'])
+def create_customer(request:HttpRequest):
+    serializer = CustomerSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    serializer.save()
+    customer = get_object_or_404(Customer, email=serializer.validated_data['email'])
+    cart_id = get_cart_id(request)
+    cart = get_object_or_404(Cart, id=cart_id, expired=False)
+    cart.customer = customer
+    cart.save()
+    return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+class CompleteOrderView(APIView):
+    def post(self, reqeust:HttpRequest):
+        pass

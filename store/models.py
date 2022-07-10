@@ -27,7 +27,9 @@ class Product(models.Model):
 
 
 class Cart(models.Model):
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, null=True, blank=True)
     id = models.UUIDField(primary_key=True, default=uuid4)
+    expired = models.BooleanField(default=False)
     date_created = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now=True)
 

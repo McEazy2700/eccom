@@ -25,6 +25,13 @@ class MiniCartItemSerializer(serializers.ModelSerializer):
         fields = ['quantity']
 
 class CustomerSerializer(serializers.ModelSerializer):
+    
     class Meta:
         model = Customer
         fields = ['first_name', 'last_name', 'email', 'phone']
+
+class MiniCustomerSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = Customer
+        fields = ['email']
