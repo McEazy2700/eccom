@@ -1,5 +1,5 @@
-from django.http import HttpRequest, HttpResponse
-from django.shortcuts import get_object_or_404, redirect, render
+from django.http import HttpRequest
+from django.shortcuts import get_object_or_404
 from django.db import transaction
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
