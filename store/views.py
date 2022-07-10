@@ -1,14 +1,14 @@
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
-from django.views import View
+from django.db import transaction
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
 
 from store.utils import get_cart_id
-from .models import Cart, CartItem, Customer, Product
-from .serializers import CartItemSerializer, CustomerSerializer, MiniCartItemSerializer, MiniCustomerSerializer, ProductDetialSerializer, ProductSerializer
+from .models import Cart, CartItem, Customer, Order, OrderItem, Product
+from .serializers import CartItemSerializer, CustomerSerializer, MiniCartItemSerializer, CartItemListSerializer, OrderItemSerializer, ProductDetialSerializer, ProductSerializer
 
 # Create your views here.
 
@@ -33,8 +33,9 @@ class CartItemList(APIView):
         cart_id = get_cart_id(request)
         cart = get_object_or_404(Cart, id=cart_id)
         cart_items = cart.items
-        serializer = CartItemSerializer(cart_items, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        print(cart.cart_total)
+        serializer = CartItemListSerializer(cart_items, many=True)
+        return Response([serializer.data, {'cart_total': cart.cart_total}], status=status.HTTP_200_OK)
 
     def post(self, request:HttpRequest):
         serializer = CartItemSerializer(data=request.data)
@@ -62,7 +63,7 @@ class CartItemDetail(APIView):
     def get(self, request:HttpRequest, pk):
         cart_id = get_cart_id(request)
         cart_item = get_object_or_404(CartItem, cart__id=cart_id, product__id=pk)
-        serializer = CartItemSerializer(cart_item)
+        serializer = CartItemSerializer(cart_item, total_price=cart_item.total_price)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def delete(self, request:HttpRequest, pk):
@@ -109,6 +110,24 @@ def create_customer(request:HttpRequest):
     cart.save()
     return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-class CompleteOrderView(APIView):
-    def post(self, reqeust:HttpRequest):
-        pass
+@api_view()
+@transaction.atomic()
+def complete_order(request:HttpRequest):
+    cart_id = get_cart_id(request)
+    cart = get_object_or_404(Cart, id=cart_id)
+    order = Order.objects.create(customer=cart.customer)
+    print(cart.items)
+    items = CartItem.objects.filter(cart__id=cart_id)
+    for item in items:
+        order_item = OrderItem.objects.create(
+            order=order,
+            product=item.product,
+            quantity=item.quantity,
+            unit_price=item.product.price,
+        )
+        order_item.save()
+    order.completed = True
+    order.save()
+    order_items = order.items
+    serializer = OrderItemSerializer(order_items, many=True)
+    return Response([serializer.data, {'order_total': order.order_total}])
