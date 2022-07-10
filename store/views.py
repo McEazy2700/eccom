@@ -8,7 +8,7 @@ from rest_framework import status
 
 from store.utils import get_cart_id
 from .models import Cart, CartItem, Customer, Order, OrderItem, Product
-from .serializers import CartItemSerializer, CustomerSerializer, MiniCartItemSerializer, CartItemListSerializer, OrderItemSerializer, ProductDetialSerializer, ProductSerializer
+from .serializers import CartItemSerializer, CustomerSerializer, MiniCartItemSerializer, CartItemListSerializer, OrderItemSerializer, ProductDetialSerializer, ProductSerializer, ShippingInfoSerializer
 
 # Create your views here.
 
@@ -99,6 +99,7 @@ def get_customer(request:HttpRequest):
 
 
 @api_view(['GET', 'POST'])
+@transaction.atomic()
 def create_customer(request:HttpRequest):
     serializer = CustomerSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
@@ -108,6 +109,15 @@ def create_customer(request:HttpRequest):
     cart = get_object_or_404(Cart, id=cart_id, expired=False)
     cart.customer = customer
     cart.save()
+    return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+@api_view(['POST'])
+def create_shipping(request:HttpRequest):
+    cart = get_object_or_404(Cart, id=get_cart_id(request))
+    serializer = ShippingInfoSerializer(data=request.data)
+    serializer.initial_data['customer'] = cart.customer.id
+    serializer.is_valid(raise_exception=True)
+    serializer.save()
     return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 @api_view()
