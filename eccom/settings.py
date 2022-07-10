@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     "debug_toolbar",
     'rest_framework',
-    'store',
+    'api',
 ]
 
 MIDDLEWARE = [
@@ -81,7 +81,7 @@ WSGI_APPLICATION = 'eccom.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'ecomm_db',
+        'NAME': 'ecomm_db2',
         'HOST': 'localhost',
         'USER': 'root',
         'PASSWORD': os.environ.get('MYSQL_PASSWORD')

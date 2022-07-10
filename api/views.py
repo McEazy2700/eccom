@@ -6,11 +6,25 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
 
-from store.utils import get_cart_id
+from .utils import get_cart_id
 from .models import Cart, CartItem, Customer, Order, OrderItem, Product
 from .serializers import CartItemSerializer, CustomerSerializer, MiniCartItemSerializer, CartItemListSerializer, OrderItemSerializer, ProductDetialSerializer, ProductSerializer, ShippingInfoSerializer
 
 # Create your views here.
+
+@api_view()
+def get_urls(request:HttpRequest):
+    api_urls = {
+    'List':'products/',
+    'Detail View': 'products/<int:id>',
+    '[GET: Cart Item List], [POST: Add Item to Cart]': 'cart/',
+    '[GET: Cart item detail], [DELETE: delete Cart item], [PATCH: change cart item quantity]': 'cart/<int:pk>',
+    '[POST: get an already existing customer]': 'customer/exists/',
+    '[POST: create a new customer]' :'customer/new/',
+    '[POST: create a new shipping info for customer]' :'shipping/new/',
+    'Complete Transaction' :'checkout/'
+    }
+    return Response(api_urls)
 
 @api_view()
 def product_list(request:HttpRequest) -> Response:
