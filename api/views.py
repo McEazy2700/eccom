@@ -99,8 +99,10 @@ class CartItemDetail(APIView):
         cart_item = get_object_or_404(CartItem, cart__id=cart_id, product__id=pk)
         serializer = MiniCartItemSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        cart_item.quantity = serializer.validated_data['quantity']
+        cart_item.quantity += serializer.validated_data['quantity']
         cart_item.save()
+        if cart_item.quantity <= 0:
+            cart_item.delete()
         serializer = CartItemSerializer(cart_item)
         return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
 
