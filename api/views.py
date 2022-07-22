@@ -44,12 +44,19 @@ def product_detail(request:HttpRequest, id) -> Response:
 
 class CartItemList(APIView):
     def get(self, request:HttpRequest):
-        cart_id = get_cart_id(request)
-        cart = get_object_or_404(Cart, id=cart_id)
+        try:
+            cart_id = get_cart_id(request)
+            print('Before:', cart_id)
+            cart = Cart.objects.get(id=cart_id)
+        except:
+            del request.session['cart_id']
+            cart_id = get_cart_id(request)
+            print('After:', cart_id)
+            cart = get_object_or_404(Cart, id=cart_id)
         cart_items = cart.items
         print(cart.cart_total)
         serializer = CartItemListSerializer(cart_items, many=True)
-        return Response([serializer.data, {'cart_total': cart.cart_total}], status=status.HTTP_200_OK)
+        return Response({'cart': serializer.data, 'cart_total': cart.cart_total}, status=status.HTTP_200_OK)
 
     def post(self, request:HttpRequest):
         serializer = CartItemSerializer(data=request.data)
@@ -70,7 +77,8 @@ class CartItemList(APIView):
                 product=product, 
                 quantity=quantity)
             item.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        response_serializer = CartItemListSerializer(item)
+        return Response(response_serializer.data, status=status.HTTP_201_CREATED)
 
 
 class CartItemDetail(APIView):
@@ -152,6 +160,7 @@ def complete_order(request:HttpRequest):
         order_item.save()
     order.completed = True
     order.save()
+    del request.session['cart_id']
     order_items = order.items
     serializer = OrderItemSerializer(order_items, many=True)
     return Response([serializer.data, {'order_total': order.order_total}])
