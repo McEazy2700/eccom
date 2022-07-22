@@ -104,6 +104,7 @@ class CartItemDetail(APIView):
         if cart_item.quantity <= 0:
             cart_item.delete()
         serializer = CartItemSerializer(cart_item)
+        print(serializer.error_messages)
         return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
 
 @api_view(['POST'])
