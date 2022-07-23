@@ -6,11 +6,15 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
 
-from .utils import get_cart_id
+from .utils import get_cart_id, verifyPayment
 from .models import Cart, CartItem, Customer, Order, OrderItem, Product
 from .serializers import CartItemSerializer, CustomerSerializer, MiniCartItemSerializer, CartItemListSerializer, OrderItemSerializer, ProductDetialSerializer, ProductSerializer, ShippingInfoSerializer
 
 # Create your views here.
+
+import stripe
+stripe.api_key = "sk_test_51LOo26L0d7cpkQe7uHXI0M4XJWHKtt95dbA96eBdL9hFLpNiSVilOMZYkZkKcF0rvW81auKPdud54LJzykQJRgxZ00ua85ajaT"
+
 
 @api_view()
 def get_urls(request:HttpRequest):
@@ -43,28 +47,23 @@ def product_detail(request:HttpRequest, id) -> Response:
 
 
 class CartItemList(APIView):
-    def get(self, request:HttpRequest):
-        try:
-            cart_id = get_cart_id(request)
-            print('Before:', cart_id)
-            cart = Cart.objects.get(id=cart_id)
-        except:
-            del request.session['cart_id']
-            cart_id = get_cart_id(request)
-            print('After:', cart_id)
-            cart = get_object_or_404(Cart, id=cart_id)
+    def get(self, request:HttpRequest, id:str):
+        cart_id = get_cart_id(id)
+        cart = get_object_or_404(Cart, id=cart_id)
         cart_items = cart.items
-        print(cart.cart_total)
         serializer = CartItemListSerializer(cart_items, many=True)
-        return Response({'cart': serializer.data, 'cart_total': cart.cart_total}, status=status.HTTP_200_OK)
+        return Response({'cart': serializer.data, 
+                        'cart_total': cart.cart_total, 
+                        'cart_id': cart_id}, 
+                        status=status.HTTP_200_OK)
 
-    def post(self, request:HttpRequest):
+    def post(self, request:HttpRequest, id:str):
         serializer = CartItemSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         product = serializer.validated_data['product']
         quantity = serializer.validated_data['quantity']
 
-        cart_id = get_cart_id(request)
+        cart_id = get_cart_id(id)
 
         cart = get_object_or_404(Cart, id=cart_id)
         try:
@@ -82,20 +81,20 @@ class CartItemList(APIView):
 
 
 class CartItemDetail(APIView):
-    def get(self, request:HttpRequest, pk):
-        cart_id = get_cart_id(request)
+    def get(self, request:HttpRequest, cart_id:str, pk:int):
+        cart_id = get_cart_id(cart_id)
         cart_item = get_object_or_404(CartItem, cart__id=cart_id, product__id=pk)
         serializer = CartItemSerializer(cart_item, total_price=cart_item.total_price)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    def delete(self, request:HttpRequest, pk):
-        cart_id = get_cart_id(request)
+    def delete(self, request:HttpRequest, cart_id:str, pk:int):
+        cart_id = get_cart_id(cart_id)
         cart_item = get_object_or_404(CartItem, cart__id=cart_id, product__id=pk)
         cart_item.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    def patch(self, request:HttpRequest, pk):
-        cart_id = get_cart_id(request)
+    def patch(self, request:HttpRequest, cart_id:str, pk:int):
+        cart_id = get_cart_id(cart_id)
         cart_item = get_object_or_404(CartItem, cart__id=cart_id, product__id=pk)
         serializer = MiniCartItemSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -113,42 +112,45 @@ def get_customer(request:HttpRequest):
         try:
             print(request.data)
             customer = Customer.objects.get(email=request.data['email'])
-            cart_id = get_cart_id(request)
+            print('Customer Email:', customer)
+            cart_id = get_cart_id(request.data['cart_id'])
             cart = get_object_or_404(Cart, id=cart_id, expired=False)
             cart.customer = customer
             cart.save()
             serializer = CustomerSerializer(customer)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         except:
+
             return Response({'error': 'does not exist'}, status=status.HTTP_404_NOT_FOUND)
-        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 @api_view(['GET', 'POST'])
 @transaction.atomic()
-def create_customer(request:HttpRequest):
+def create_customer(request:HttpRequest, cart_id:str):
     serializer = CustomerSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
     serializer.save()
     customer = get_object_or_404(Customer, email=serializer.validated_data['email'])
-    cart_id = get_cart_id(request)
+    cart_id = get_cart_id(cart_id)
     cart = get_object_or_404(Cart, id=cart_id, expired=False)
     cart.customer = customer
     cart.save()
     return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 @api_view(['POST'])
-def create_shipping(request:HttpRequest):
-    cart = get_object_or_404(Cart, id=get_cart_id(request))
+def create_shipping(request:HttpRequest, cart_id:str):
+    cart = get_object_or_404(Cart, id=get_cart_id(cart_id))
     serializer = ShippingInfoSerializer(data=request.data)
     serializer.initial_data['customer'] = cart.customer.id
     serializer.is_valid(raise_exception=True)
     serializer.save()
     return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-@api_view()
+@api_view(['POST'])
 @transaction.atomic()
-def complete_order(request:HttpRequest):
-    cart_id = get_cart_id(request)
+def complete_order(request:HttpRequest, cart_id:str):
+    verifyPayment(request.data['reference'])
+    cart_id = get_cart_id(cart_id)
     cart = get_object_or_404(Cart, id=cart_id)
     order = Order.objects.create(customer=cart.customer)
     print(cart.items)
@@ -163,7 +165,7 @@ def complete_order(request:HttpRequest):
         order_item.save()
     order.completed = True
     order.save()
-    del request.session['cart_id']
+    cart.expired = True
     order_items = order.items
     serializer = OrderItemSerializer(order_items, many=True)
-    return Response([serializer.data, {'order_total': order.order_total}])
+    return Response({'order_items':serializer.data, 'order_total': order.order_total})
