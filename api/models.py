@@ -19,6 +19,7 @@ class Product(models.Model):
     description = models.TextField()
     images = models.ImageField(null=True, blank=True)
     in_stock = models.BooleanField(default=True)
+    is_featured = models.BooleanField(default=False)
     date_created = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now=True)
 

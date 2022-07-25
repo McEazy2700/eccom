@@ -37,6 +37,12 @@ def product_list(request:HttpRequest) -> Response:
 
     return Response(serializer.data, status=status.HTTP_200_OK)
 
+@api_view()
+def featured_produtct_list(reqeust:HttpRequest) -> Response:
+    queryset = Product.objects.filter(is_featured=True)
+    serializer = ProductSerializer(queryset, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 @api_view()
 def product_detail(request:HttpRequest, id) -> Response:
@@ -84,8 +90,8 @@ class CartItemDetail(APIView):
     def get(self, request:HttpRequest, cart_id:str, pk:int):
         cart_id = get_cart_id(cart_id)
         cart_item = get_object_or_404(CartItem, cart__id=cart_id, product__id=pk)
-        serializer = CartItemSerializer(cart_item, total_price=cart_item.total_price)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        serializer = CartItemSerializer(cart_item, )
+        return Response({'item': serializer.data, 'total_price':cart_item.total_price}, status=status.HTTP_200_OK)
 
     def delete(self, request:HttpRequest, cart_id:str, pk:int):
         cart_id = get_cart_id(cart_id)
