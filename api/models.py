@@ -17,7 +17,6 @@ class Product(models.Model):
     title = models.CharField(max_length=255)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     description = models.TextField()
-    images = models.ImageField(null=True, blank=True)
     in_stock = models.BooleanField(default=True)
     is_featured = models.BooleanField(default=False)
     date_created = models.DateTimeField(auto_now_add=True)
@@ -25,6 +24,11 @@ class Product(models.Model):
 
     def __str__(self) -> str:
         return self.title
+
+
+class Image(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    image = models.ImageField()
 
 
 class Cart(models.Model):
@@ -74,6 +78,10 @@ class Order(models.Model):
         items = OrderItem.objects.filter(order__id=self.id)
         return sum([item.total_price for item in items])
 
+    @property
+    def get_items(self):
+        return OrderItem.objects.filter(order__id=self.id)
+
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.PROTECT, related_name='items')
     product = models.ForeignKey(Product, on_delete=models.PROTECT)
@@ -83,7 +91,7 @@ class OrderItem(models.Model):
     last_updated = models.DateTimeField(auto_now=True)
 
     def __str__(self) -> str:
-        return self.id
+        return f'{self.id}'
 
     @property
     def total_price(self):
