@@ -1,14 +1,18 @@
 from rest_framework import serializers
-from .models import CartItem, Customer, OrderItem, Product, ShippingInfo
+from .models import CartItem, Customer, Image, OrderItem, Product, ShippingInfo
 
+class ImageSerializer(serializers.Serializer):
+    image = serializers.ImageField()
 
 class ProductSerializer(serializers.ModelSerializer):
+    images = ImageSerializer
     class Meta:
         model = Product
         fields = ['id', 'title', 'price', 'images']
 
 
 class ProductDetialSerializer(serializers.ModelSerializer):
+    images = ImageSerializer
     class Meta:
         model = Product
         fields = ['id', 'title', 'price', 'description', 'images']

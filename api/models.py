@@ -11,7 +11,7 @@ class Customer(models.Model):
     phone = models.CharField(max_length=15, unique=True)
 
     def __str__(self) -> str:
-        return f'{self.first_name} {self.last_name}'
+        return f'{self.email}'
 
 class Product(models.Model):
     title = models.CharField(max_length=255)
@@ -27,7 +27,7 @@ class Product(models.Model):
 
 
 class Image(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='images')
     image = models.ImageField()
 
 
@@ -69,9 +69,10 @@ class Order(models.Model):
     date_added = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now=True)
     completed = models.BooleanField(default=False)
+    delivered = models.BooleanField(default=False)
 
     def __str__(self) -> str:
-        return f'Order: {self.customer.first_name} {self.customer.last_name}'
+        return f'{self.customer.email}'
 
     @property
     def order_total(self):
@@ -81,6 +82,9 @@ class Order(models.Model):
     @property
     def get_items(self):
         return OrderItem.objects.filter(order__id=self.id)
+
+    class Meta:
+        ordering = ['-date_added', 'delivered']
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.PROTECT, related_name='items')
@@ -104,6 +108,7 @@ class ShippingInfo(models.Model):
     state = models.CharField(max_length=255)
     city = models.CharField(max_length=255)
     zipcode = models.CharField(max_length=255)
+    date_added = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.address

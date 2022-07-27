@@ -11,6 +11,7 @@ class ImageAdmin(admin.ModelAdmin):
 
 class ImageInline(admin.TabularInline):
     model = Image
+    extra = 0
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
@@ -39,21 +40,26 @@ class OrderItemInline(admin.StackedInline):
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
     list_display = ['customer', 'completed', 'date_added', 'id']
-    fields = ['customer', 'completed']
-    readonly_fields = ['date_added']
+    fields = ['customer', 'completed', 'date_added', 'delivered']
+    readonly_fields = ['date_added', 'last_updated']
+    list_filter = ['delivered', 'customer']
     inlines = [OrderItemInline]
     list_editable = ['id']
 
-class ShippingInline(admin.TabularInline):
+class ShippingInline(admin.StackedInline):
     model = ShippingInfo
-    extra = 1
+    fields = ['customer', 'address', 'state', 'city', 'zipcode', 'date_added']
+    extra = 0
+    readonly_fields = ['date_added']
     can_delete = False
 
 
 class OrderInline(admin.StackedInline):
     model = Order
-    fields = ['customer', 'completed']
+    extra = 0
+    fields = ['customer', 'completed', 'date_added', 'delivered']
     inlines = [OrderItemInline]
+    readonly_fields = ['date_added', 'last_updated']
 
 
 @admin.register(Customer)
@@ -63,4 +69,6 @@ class CustomerAdmin(admin.ModelAdmin):
 
 @admin.register(ShippingInfo)
 class ShippingInfoAdmin(admin.ModelAdmin):
-    list_display = ['customer']
+    list_display = ['customer', 'date_added']
+    fields = ['customer', 'address', 'state', 'city', 'zipcode', 'date_added']
+    readonly_fields = ['date_added']
