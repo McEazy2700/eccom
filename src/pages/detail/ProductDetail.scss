@@ -1,0 +1,104 @@
+.mesh__product-detail {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-top: 10rem;
+}
+
+.mesh__product-detail_header {
+    display: flex;
+    flex-direction: row;
+}
+
+.mesh__product-detail_link a{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    
+    h4 {
+        transition: all 0.3s ease;
+        margin-left: 0.5rem;
+    }
+}
+
+.mesh__product-detail_link:hover a {
+    h4 {
+        margin-left: 1rem;
+    }
+}
+
+.mesh__product-detail_header-details__body-title {
+    margin-bottom: 2rem;
+}
+
+.mesh__product-detail_header-images,
+.mesh__product-detail_header-details {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.mesh__product-detail_header-images img {
+    width: 100%;
+}
+
+.mesh__product-detail_header-details {
+    padding: 1rem 2rem;
+}
+
+.mesh__product-detail_header-details__body {
+    display: flex;
+    flex-direction: column;
+}
+
+.mesh__product-detail_header-details__body-price {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin-top: 1rem;
+}
+
+.mesh__product-detail_header-details__cta {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    justify-content: center;
+}
+
+.mesh__cart-mobileCartItemList_item-addButton {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    button {
+        display: flex;
+        flex: 1;
+        justify-content: center;
+        align-items: center;
+        padding: 1rem ;
+        border-radius: 12px;
+        border: 1.5px solid var(--color-primary);
+        background-color: var(--color-primary-transparent);
+        font-weight: 600;
+        font-size: 16px;
+        transition: all 0.3s ease;
+    }
+
+    button:hover {
+        border-color: transparent;
+        background-color: var(--color-primary);
+        color: white;
+    }
+}
+
+@media screen and (max-width: 770px) {
+    .mesh__product-detail_header {
+        flex-direction: column;
+    }
+
+    @media screen and (max-width: 450px) {
+        .mesh__product-detail_header-details__cta {
+            grid-template-columns: 1fr;
+        }
+    }
+}

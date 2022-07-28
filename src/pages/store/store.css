@@ -1,0 +1,39 @@
+.mesh__store {
+    margin-top: 7rem;
+}
+
+.mesh__store-products {
+    display: flex;
+    gap: clamp(2rem, 1vw, 1rem);
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.card {
+    max-height: 380px;
+    max-width: 284px;
+}
+@media screen and (max-width: 1024px) {
+    .mesh__store-products {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+    }
+}
+
+@media screen and (max-width: 950px) {
+    .mesh__store-products {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+
+    @media screen and (max-width: 620px) {
+        .mesh__store-products {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        @media screen and (max-width: 350px) {
+            .mesh__store-products {
+                grid-template-columns: 1fr;
+            }
+        }
+    }
+}

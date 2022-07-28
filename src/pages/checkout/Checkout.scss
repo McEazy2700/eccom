@@ -1,0 +1,122 @@
+.mesh__checkout {
+    margin-top: 6rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.mesh__checkout-title {
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.mesh__checkout-customer_info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    form {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+    }
+}
+
+.mesh__checkout-customer_info__shipping_info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1rem;
+    flex-direction: column;
+}
+
+.mesh__checkout-customer_info__user_info,
+.mesh__checkout-customer_info__shipping_info__form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: clamp(5px, 1vw, 2px);
+    padding: 1rem 0;
+    min-width: fit-content;
+}
+
+.checkout__form_control {
+    width: 100%;
+    display: flex;
+    padding: 0.3rem 1rem;
+    justify-content: center;
+    align-items: center;
+
+    input {
+        display: flex;
+        padding: 0.5rem 1rem;
+        width: 30vw;
+        border-radius: 7px;
+        border: 1px solid black;
+        font-size: 1.025rem;
+        font-family: inherit;
+    }
+
+    input:focus {
+        outline-color: var(--color-primary);
+    }
+}
+
+.checkout__form_control input.invalid {
+    border-color: red;
+    outline-color: red;
+    background-color: rgb(247, 153, 153);
+}
+
+.checkout__form_control input.invalid:focus {
+    background-color: rgb(247, 153, 153);
+}
+
+.mesh__checkout-customer_info__submit {
+    button {
+        padding: 0.6rem 4rem;
+        border-radius: 20px;
+        border: none;
+        background-color: var(--color-primary);
+        color: white;
+        font-weight: bold;
+        font-size: 1.1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    button:hover,
+    button:active {
+        opacity: 0.7;
+    }
+}
+
+@media screen and (max-width: 1024px) {
+    .mesh__checkout-customer_info__user_info,
+    .mesh__checkout-customer_info__shipping_info__form {
+        grid-template-columns: 1fr;
+    }
+
+    .checkout__form_control {
+        
+        input {
+            width: 60vw;
+            font-size: 1rem;
+        }
+    }
+
+    @media screen and (max-width: 555px) {
+        .checkout__form_control {
+        
+            input {
+                width: 80vw;
+                font-size: 0.9rem;
+            }
+        }
+    }
+}

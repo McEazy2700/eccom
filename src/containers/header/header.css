@@ -1,0 +1,87 @@
+.mesh__header {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin-top: 5rem;
+}
+
+.mesh__header-hero {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.mesh__header-hero_message {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    width: 100%;
+    justify-content: center;
+    height: 100%;
+}
+
+.mesh__header-hero_message h1 {
+    font-weight: 700;
+    font-size: 64px;
+    line-height: 80px;
+}
+
+.mesh__header-hero_message p {
+    font-size: 16px;
+    line-height: 32px;
+}
+
+.mesh__header-hero_image {
+    display: flex;
+    flex: 1;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+}
+
+.mesh__header-hero_image img {
+    width: 100%;
+    height: 100%;
+}
+
+.mesh__header-hero_message-cta {
+    margin-block: 2rem;
+}
+
+.mesh__header-hero_message-cta a{
+    color: #ffffff;
+    background: var(--color-primary);
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+}
+
+@media screen and (max-width: 800px) {
+    .mesh__header-hero {
+        flex-direction: column;
+    }
+
+    .mesh__header-hero_message h1 {
+        font-size: 54px;
+        line-height: 70px;
+    }
+
+    .mesh__header-hero_message p {
+        font-size: 16px;
+        line-height: 28px;
+    }
+}
+
+@media screen and (max-width: 550px) {
+    .mesh__header-hero_message h1 {
+        font-size: 44px;
+        line-height: 60px;
+    }
+
+    .mesh__header-hero_message p {
+        font-size: 16px;
+        line-height: 25px;
+    }
+}

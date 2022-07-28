@@ -1,0 +1,41 @@
+.mesh__testimonials-testimonial {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem 5rem;
+}
+
+.mesh__testimonials-testimonial_image {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    height: 150px;
+    overflow: hidden;
+}
+
+.mesh__testimonials-testimonial_image img {
+    border-radius: var(--image-radius);
+    height: 100%;
+}
+
+.mesh__testimonials-testimonial_details {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem 0.5rem;
+    background: #fff;
+    text-align: center;
+    justify-content: center;
+    border-radius: var(--border-radius);
+    font-weight: 500;
+    line-height: 25px;
+    letter-spacing: 0.75px;
+    word-spacing: 2px;
+}
+
+.mesh__testimonials-testimonial_details h5 {
+    align-self: center;
+    margin-top: 1rem;
+    color: var(--color-primary);
+    font-size: medium;
+    font-style: italic;
+}
