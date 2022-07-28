@@ -4,17 +4,17 @@ from .models import Cart
 
 
 def get_cart_id(request:HttpRequest, id:str):
-    try:
-        cart_id = request.requests.session.get('cart_id')
-        exists = Cart.objects.get(id=cart_id)
-        if exists:
-            return
-        else:
-            new_cart = Cart.objects.create()
-            cart_id = new_cart.id
-    except:
-        new_cart = Cart.objects.create()
-        cart_id = new_cart.id
+    # try:
+    #     cart_id = request.requests.session.get('cart_id')
+    #     exists = Cart.objects.get(id=cart_id)
+    #     if exists:
+    #         return
+    #     else:
+    #         new_cart = Cart.objects.create()
+    #         cart_id = new_cart.id
+    # except:
+    #     new_cart = Cart.objects.create()
+    #     cart_id = new_cart.id
     # if id == '0':
     #     new_cart = Cart.objects.create()
     #     new_cart.save()
