@@ -153,6 +153,8 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost:8000',
     'HTTP://127.0.0.1:3000',
     'HTTP://127.0.0.1:8000',
+    'https://dextreme.herokuapp.com',
+    'http://dextreme.herokuapp.com'
 ]
 
 # AWS

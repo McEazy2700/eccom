@@ -1,5 +1,5 @@
 const getUrl = (path) => {
-    let domain = "http://localhost:8000";
+    let domain = "https://dextreme.herokuapp.com";
     return domain += path
 }
 
