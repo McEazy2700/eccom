@@ -35,7 +35,8 @@
 .mesh__product-detail_header-details {
     display: flex;
     flex-direction: column;
-    flex: 1;
+    // flex: 1;
+    width: 100%
 }
 
 .mesh__product-detail_header-images img {

@@ -54,7 +54,7 @@ def product_detail(request:HttpRequest, id) -> Response:
 
 class CartItemList(APIView):
     def get(self, request:HttpRequest, id:str):
-        cart_id = get_cart_id(id)
+        cart_id = get_cart_id(request, id)
         cart = get_object_or_404(Cart, id=cart_id)
         cart_items = cart.items
         serializer = CartItemListSerializer(cart_items, many=True)
@@ -69,7 +69,7 @@ class CartItemList(APIView):
         product = serializer.validated_data['product']
         quantity = serializer.validated_data['quantity']
 
-        cart_id = get_cart_id(id)
+        cart_id = get_cart_id(request, id)
 
         cart = get_object_or_404(Cart, id=cart_id)
         try:
@@ -88,19 +88,19 @@ class CartItemList(APIView):
 
 class CartItemDetail(APIView):
     def get(self, request:HttpRequest, cart_id:str, pk:int):
-        cart_id = get_cart_id(cart_id)
+        cart_id = get_cart_id(request, cart_id)
         cart_item = get_object_or_404(CartItem, cart__id=cart_id, product__id=pk)
         serializer = CartItemSerializer(cart_item, )
         return Response({'item': serializer.data, 'total_price':cart_item.total_price}, status=status.HTTP_200_OK)
 
     def delete(self, request:HttpRequest, cart_id:str, pk:int):
-        cart_id = get_cart_id(cart_id)
+        cart_id = get_cart_id(request, cart_id)
         cart_item = get_object_or_404(CartItem, cart__id=cart_id, product__id=pk)
         cart_item.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     def patch(self, request:HttpRequest, cart_id:str, pk:int):
-        cart_id = get_cart_id(cart_id)
+        cart_id = get_cart_id(request, cart_id)
         cart_item = get_object_or_404(CartItem, cart__id=cart_id, product__id=pk)
         serializer = MiniCartItemSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -119,7 +119,7 @@ def get_customer(request:HttpRequest):
             print(request.data)
             customer = Customer.objects.get(email=request.data['email'])
             print('Customer Email:', customer)
-            cart_id = get_cart_id(request.data['cart_id'])
+            cart_id = get_cart_id(request, request.data['cart_id'])
             cart = get_object_or_404(Cart, id=cart_id, expired=False)
             cart.customer = customer
             cart.save()
@@ -137,7 +137,7 @@ def create_customer(request:HttpRequest, cart_id:str):
     serializer.is_valid(raise_exception=True)
     serializer.save()
     customer = get_object_or_404(Customer, email=serializer.validated_data['email'])
-    cart_id = get_cart_id(cart_id)
+    cart_id = get_cart_id(request, cart_id)
     cart = get_object_or_404(Cart, id=cart_id, expired=False)
     cart.customer = customer
     cart.save()
@@ -145,7 +145,7 @@ def create_customer(request:HttpRequest, cart_id:str):
 
 @api_view(['POST'])
 def create_shipping(request:HttpRequest, cart_id:str):
-    cart = get_object_or_404(Cart, id=get_cart_id(cart_id))
+    cart = get_object_or_404(Cart, id=get_cart_id(request, cart_id))
     serializer = ShippingInfoSerializer(data=request.data)
     serializer.initial_data['customer'] = cart.customer.id
     serializer.is_valid(raise_exception=True)
@@ -156,7 +156,7 @@ def create_shipping(request:HttpRequest, cart_id:str):
 @transaction.atomic()
 def complete_order(request:HttpRequest, cart_id:str):
     verifyPayment(request.data['reference'])
-    cart_id = get_cart_id(cart_id)
+    cart_id = get_cart_id(request, cart_id)
     cart = get_object_or_404(Cart, id=cart_id)
     order = Order.objects.create(customer=cart.customer)
     print(cart.items)

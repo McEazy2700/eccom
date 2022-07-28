@@ -39,7 +39,7 @@ function App() {
       setCartTotal(data.cart_total)
       localStorage.setItem("cart_id", `${data.cart_id}`);
     });
-  }, [cartId, newCartItem, cart.length]);
+  }, [cartId, newCartItem]);
   
 
   return (
