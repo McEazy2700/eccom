@@ -5,14 +5,14 @@ class ImageSerializer(serializers.Serializer):
     image = serializers.ImageField()
 
 class ProductSerializer(serializers.ModelSerializer):
-    images = ImageSerializer
+    images = ImageSerializer(many=True)
     class Meta:
         model = Product
         fields = ['id', 'title', 'price', 'images']
 
 
 class ProductDetialSerializer(serializers.ModelSerializer):
-    images = ImageSerializer
+    images = ImageSerializer(many=True)
     class Meta:
         model = Product
         fields = ['id', 'title', 'price', 'description', 'images']
