@@ -24,6 +24,7 @@
     padding: 1rem 0.5rem;
     background: #fff;
     text-align: center;
+    margin-inline: 0.65rem;
     justify-content: center;
     border-radius: var(--border-radius);
     font-weight: 500;
