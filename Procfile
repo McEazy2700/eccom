@@ -1,2 +1,2 @@
 release: python manage.py migrate
-web: guinicorn eccom.wsgi
+web: gunicorn eccom.wsgi --log-file -
