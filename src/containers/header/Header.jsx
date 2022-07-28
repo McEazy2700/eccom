@@ -1,6 +1,7 @@
 import React from 'react'
 import './header.css'
 import Shoe from '../../assets/shoe.png';
+import { Link } from 'react-router-dom';
 
 const Header = () => {
   return (
@@ -13,7 +14,7 @@ const Header = () => {
             your doorstep.
           </p>
           <div className="mesh__header-hero_message-cta">
-            <a href="/store">Get Started</a>
+            <Link to='/store'>Get Started</Link>
           </div>
         </div>
         <div className="mesh__header-hero_image">

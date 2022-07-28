@@ -1,4 +1,3 @@
-import logo from "./logo.svg";
 import "./App.css";
 import LandingPage from "./pages/LandingPage";
 import { Routes, Route } from "react-router-dom";
@@ -29,7 +28,7 @@ function App() {
 
   useEffect(() => {
     let currCartId = localStorage.getItem("cart_id");
-    const cartPath = `/api/cart/${currCartId == null ? cartId : currCartId}/`
+    const cartPath = `/api/cart/${currCartId == null || 'undefiled' ? cartId : currCartId}/`
     const cartUrl = getUrl(cartPath);
     getData(cartUrl).then((data) => {
       setCartUrl(cartUrl);
@@ -40,7 +39,7 @@ function App() {
       setCartTotal(data.cart_total)
       localStorage.setItem("cart_id", `${data.cart_id}`);
     });
-  }, [cartId, newCartItem]);
+  }, [cartId, newCartItem, cart.length]);
   
 
   return (
