@@ -39,3 +39,13 @@
     font-size: medium;
     font-style: italic;
 }
+
+@media screen and (max-width: 550px) {
+    .mesh__testimonials-testimonial {
+        padding: 0.5rem 1rem
+    }
+
+    .mesh__testimonials-testimonial_details {
+        padding: 0.5rem 0.65rem;
+    }
+}
