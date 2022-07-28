@@ -183,4 +183,4 @@ JAZZMIN_SETTINGS = {
     "site_brand": "Dxtreme Admin",
 }
 
-# django_heroku.settings(locals())
+django_heroku.settings(locals())
