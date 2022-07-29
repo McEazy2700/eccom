@@ -12,9 +12,6 @@ from .serializers import CartItemSerializer, CustomerSerializer, MiniCartItemSer
 
 # Create your views here.
 
-import stripe
-stripe.api_key = "sk_test_51LOo26L0d7cpkQe7uHXI0M4XJWHKtt95dbA96eBdL9hFLpNiSVilOMZYkZkKcF0rvW81auKPdud54LJzykQJRgxZ00ua85ajaT"
-
 
 @api_view()
 def get_urls(request:HttpRequest):
@@ -172,6 +169,7 @@ def complete_order(request:HttpRequest, cart_id:str):
     order.completed = True
     order.save()
     cart.expired = True
+    cart.delete()
     order_items = order.items
     serializer = OrderItemSerializer(order_items, many=True)
     return Response({'order_items':serializer.data, 'order_total': order.order_total})
