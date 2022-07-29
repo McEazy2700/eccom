@@ -17,14 +17,25 @@
     width: 100%;
     display: flex;
     flex-direction: row;
-    gap: 2rem;
+    align-items: center;
     flex-wrap: wrap;
-    justify-content: space-evenly;
+    justify-content: center;
 }
 
 .swiper-wrapper {
     padding-bottom: 4rem;
 }
+
+.swiper-slide {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* .swiper-slide .card {
+    align-self: center;
+    justify-self: center;
+} */
 
 .mesh__featured-cta {
     margin-top: 1rem;

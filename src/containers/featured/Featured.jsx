@@ -16,8 +16,10 @@ const Featured = () => {
     const [featured, setFeatured] = useState([])
     const isSmallDevice = useMediaQuery({query: '(max-width: 610px)'})
     const isMediumDevice = useMediaQuery({query: '(max-width: 770px)'})
+    const isLargeDevice = useMediaQuery({query: '(max-width: 1024px)'})
+    const isExtraLargeDevice = useMediaQuery({query: '(max-width: 1440px)'})
     let swiperVieNum;
-    isSmallDevice ? swiperVieNum = 2 : isMediumDevice ? swiperVieNum = 3 : swiperVieNum = 4;
+    isSmallDevice ? swiperVieNum = 1 : isMediumDevice ? swiperVieNum = 2 : isLargeDevice ? swiperVieNum = 3 : swiperVieNum = 4;
     
     useEffect(()=> {
         const featuredUrl = getUrl('/api/products/featured/')
