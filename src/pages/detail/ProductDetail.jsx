@@ -50,6 +50,7 @@ const ProductDetail = () => {
         })
     }, [productUrl, inCart, newItem])
     
+    
 
     const url = context.cartUrl;
     const data = { product: productId, quantity: 1 };
@@ -92,8 +93,8 @@ const ProductDetail = () => {
                     </h2>
                     <p>{product.description}</p>
                     <div className="mesh__product-detail_header-details__body-price">
-                        <h4>&#8358;12000</h4>
-                        <h3>&#8358;24000</h3>
+                        <h4>&#8358;{product.price}</h4>
+                        <h3>&#8358;{cartItemDetail.total_price}</h3>
                     </div>
                 </div>
                 <div className="mesh__product-detail_header-details__cta">
