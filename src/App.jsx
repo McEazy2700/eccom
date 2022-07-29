@@ -28,7 +28,10 @@ function App() {
 
   useEffect(() => {
     let currCartId = localStorage.getItem("cart_id");
-    const cartPath = `/api/cart/${currCartId == null || 'undefiled' ? cartId : currCartId}/`
+    console.log('CURR:', currCartId);
+    // (currCartId !== null && currCartId !== 'undefied') ? setCartId(currCartId) : setCartId('0')
+    console.log('CURR-CART-ID:', cartId);
+    const cartPath = `/api/cart/${currCartId || '0'}/`
     const cartUrl = getUrl(cartPath);
     getData(cartUrl).then((data) => {
       setCartUrl(cartUrl);

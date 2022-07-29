@@ -48,7 +48,7 @@ const ProductDetail = () => {
                 setQuantity(data.item.quantity)
             }
         })
-    }, [productUrl, inCart])
+    }, [productUrl, inCart, newItem])
     
 
     const url = context.cartUrl;
