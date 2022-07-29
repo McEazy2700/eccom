@@ -15,22 +15,22 @@ def get_cart_id(request:HttpRequest, id:str):
     # except:
     #     new_cart = Cart.objects.create()
     #     cart_id = new_cart.id
-    # if id == '0':
-    #     new_cart = Cart.objects.create()
-    #     new_cart.save()
-    #     cart_id = new_cart.id
-    #     print('New Id:', cart_id)
-    # else:
-    #     try:
-    #         exists = Cart.objects.get(id=id)
-    #     except Cart.DoesNotExist:
-    #         exists = False
-    #     if exists:
-    #         cart_id = id
-    #     else:
-    #         new_cart = Cart.objects.create()
-    #         cart_id = new_cart.id
-    #     print('Exixting Id:', cart_id)
+    if id == '0':
+        new_cart = Cart.objects.create()
+        new_cart.save()
+        cart_id = new_cart.id
+        print('New Id:', cart_id)
+    else:
+        try:
+            exists = Cart.objects.get(id=id)
+        except Cart.DoesNotExist:
+            exists = False
+        if exists:
+            cart_id = id
+        else:
+            new_cart = Cart.objects.create()
+            cart_id = new_cart.id
+        print('Exixting Id:', cart_id)
     
     return cart_id
 
