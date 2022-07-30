@@ -8,8 +8,8 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
 
-import Dude1 from '../../assets/dude1.png'
-import Dude2 from '../../assets/dude2.png'
+import Lady1 from '../../assets/lady1.png'
+import Lady2 from '../../assets/lady2.png'
 
 import Testimonial from '../../components/testimonial/Testimonial'
 
@@ -17,14 +17,14 @@ const testimonies = [
     {
         id: 1,
         name: 'Jason Tomwel',
-        image: Dude1,
-        description: 'I already like Nike shoes, however having them delivered to may house makes me love them even more'
+        image: Lady1,
+        description: "Jula Hairs realy does provide me with exceptional hair products. Since I made them my one choice for hair products I've never been disapointed."
     },
     {
         id: 2,
         name: 'Darwin Herikson',
-        image: Dude2,
-        description: "It's the best shopping experience I've ever had. And I certainly didn't expect this good of a service from a copany that sells shoes."
+        image: Lady2,
+        description: "Julliet is a friend of mine and she always supies me with hair products that keep me look amizing."
     },
 ]
 

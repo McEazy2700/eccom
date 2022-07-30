@@ -20,7 +20,7 @@ function MainNavigation() {
             <div className="mesh__navbar-navbrand">
                 <div className="mesh__navbar-navbrand_image"></div>
                 <div className="mesh__navbar-navbrand_text">
-                    <h1>DXTREME <span className="extraName">SNEAKERS</span></h1>
+                    <h1>Jula Hairs<span className="extraName"></span></h1>
                 </div>
             </div>
             <div className="mesh__navbar-links">
