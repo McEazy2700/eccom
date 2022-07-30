@@ -28,7 +28,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    'dextreme.herokuapp.com',
+    'julla.herokuapp.com',
     '127.0.0.1:8000'
 ]
 
