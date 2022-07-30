@@ -178,9 +178,9 @@ DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 # JAZZMIN
 JAZZMIN_SETTINGS = {
-    "site_title": "Dxtreme Admin",
-    'site_header': 'Dxtreme Admin',
-    "site_brand": "Dxtreme Admin",
+    "site_title": "Jula Hairs Admin",
+    'site_header': 'Jula Hairs Admin',
+    "site_brand": "Jula Hairs Admin",
 }
 
 django_heroku.settings(locals())
